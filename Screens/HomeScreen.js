@@ -67,7 +67,7 @@ const HomeScreen = () => {
 
 
         <KeyboardAvoidingView 
-            behavior="padding"
+            behavior={"padding"}
             style={styles.write}
             keyboardVerticalOffset={100}
         >   
