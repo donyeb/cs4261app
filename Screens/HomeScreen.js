@@ -5,6 +5,9 @@ import Task from './components/Task'
 const HomeScreen = () => {
     const [task, setTask] = useState();
     const [taskList, setTaskList] = useState([]);
+    const [city, setCity] = useState();
+    const [show, setShow] = useState(false);
+
 
     const addTask = () => {
         Keyboard.dismiss();
@@ -18,11 +21,19 @@ const HomeScreen = () => {
         tmp.splice(index, 1);
         setTaskList(tmp);
     }
+
+    const getWeather = () => {
+
+    }
+
   return (
     <View style={styles.container}>
         <View style={styles.weatherWrapper}>
             <Text style={styles.sectionTitle}>Weather</Text>
-            <View style={styles.weather}></View>
+            <View style={styles.weather}>
+                {!show && <TextInput style={styles.weatherInput} placeholder="Enter City" value={city} onChangeText={(text) => setCity(text)}></TextInput>}
+                {!show && <TouchableOpacity style={styles.weatherButton} onPress={() => setCity(null)}></TouchableOpacity>}
+            </View>
         </View>
         <ScrollView>
             
@@ -78,7 +89,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         marginTop: 10,
         alignItems: 'center',
-        width: "80%",
+        width: "90%",
         height: "20%",
         alignSelf: "center"
     },
@@ -107,10 +118,31 @@ const styles = StyleSheet.create({
         borderRadius: 60,
         justifyContent: 'center',
         alignItems: 'center',
-         borderColor: "darkgrey",
+        borderColor: "darkgrey",
         borderWidth: 1,
     },
     addText: {
 
+    },
+    weather: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-evenly"
+    },  
+    weatherInput: {
+       paddingVertical: 15,
+        width: 250,
+        paddingHorizontal: 15,
+        backgroundColor: "white",
+        borderColor: "darkgrey",
+        borderWidth: 1,
+        borderRadius: 60,
+        width: 250,
+    },
+    weatherButton: {
+        height: 60,
+        width: 60,
+        backgroundColor: 'red',
+        borderRadius: 60,
     }
 })
