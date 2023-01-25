@@ -2,7 +2,7 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { authentication } from '../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const Login = () => {
   const [email, setEmail] = useState();
@@ -10,8 +10,14 @@ const Login = () => {
 
   const navigation = useNavigation();
 
-  const checkUser = () => {
-
+  const signInUser = () => {
+    signInWithEmailAndPassword(authentication, email, password)
+    .then((s) => {
+      setEmail(null);
+      setPassword(null);
+      navigation.navigate("Home");
+    })
+    .catch((e) => {console.log(e)})
   }
 
   return (
@@ -19,7 +25,7 @@ const Login = () => {
       <View style={styles.login}>
         <TextInput placeholder="Email" value={email} style={styles.loginInput} onChangeText={(text) => setEmail(text)}></TextInput>
         <TextInput placeholder="Password" value={password} style={styles.loginInput} secureTextEntry={true} onChangeText={(text) => setPassword(text)}></TextInput>
-        <TouchableOpacity style={styles.loginButton} onPress={checkUser}>
+        <TouchableOpacity style={styles.loginButton} onPress={signInUser}>
           <Text>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.registerButton} onPress={() => {

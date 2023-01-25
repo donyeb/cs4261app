@@ -69,7 +69,6 @@ const HomeScreen = () => {
         <KeyboardAvoidingView 
             behavior={"padding"}
             style={styles.write}
-            keyboardVerticalOffset={100}
         >   
             <TextInput style={styles.input} placeholder={"Add a task"} value={task} onChangeText={(text) => setTask(text)}/>
             <TouchableOpacity onPress={addTask}>
