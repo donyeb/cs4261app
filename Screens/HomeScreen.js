@@ -7,13 +7,13 @@ const HomeScreen = () => {
     const [taskList, setTaskList] = useState([]);
     const [city, setCity] = useState();
     const [show, setShow] = useState(false);
+    const [degress, setDegrees] = useState();
 
 
     const addTask = () => {
         Keyboard.dismiss();
         setTaskList([...taskList, task]);
         setTask(null);
-        console.log(taskList);
     }
 
     const removeTask = (index) => {
@@ -23,17 +23,32 @@ const HomeScreen = () => {
     }
 
     const getWeather = () => {
-
+        Keyboard.dismiss();
+        fetch(`http://api.weatherapi.com/v1/current.json?key=84c3ead37f784b9eafa161257232501&q=${city}&aqi=no`)
+        .then(response => response.json())
+        .then((response) => {
+            setCity(response.location.name);
+            setDegrees(response.current.temp_f);
+            setShow(true)
+        })
+        .catch((err) => {
+            alert("Enter Valid City or Zipcode")
+            setCity(null);
+        })
     }
 
   return (
     <View style={styles.container}>
         <View style={styles.weatherWrapper}>
             <Text style={styles.sectionTitle}>Weather</Text>
-            <View style={styles.weather}>
-                {!show && <TextInput style={styles.weatherInput} placeholder="Enter City" value={city} onChangeText={(text) => setCity(text)}></TextInput>}
-                {!show && <TouchableOpacity style={styles.weatherButton} onPress={() => setCity(null)}></TouchableOpacity>}
-            </View>
+            {!show && <View style={styles.weather}>
+                <TextInput style={styles.weatherInput} placeholder="Enter City or Zipcode" value={city} onChangeText={(text) => setCity(text)}></TextInput>
+                <TouchableOpacity style={styles.weatherButton} onPress={getWeather}></TouchableOpacity>
+            </View>}
+            {show && <View style={styles.temp}>
+                <Text style={styles.tempFont}>{city}</Text>
+                <Text style={styles.tempFont}>{degress}</Text>
+            </View>}
         </View>
         <ScrollView>
             
@@ -144,5 +159,16 @@ const styles = StyleSheet.create({
         width: 60,
         backgroundColor: 'red',
         borderRadius: 60,
+    },
+    temp: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
+
+    },
+    tempFont: {
+        fontSize: 35,
+        marginRight: 10,
+        alignSelf: 'center'
     }
 })
