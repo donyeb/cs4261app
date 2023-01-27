@@ -1,6 +1,7 @@
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView} from 'react-native'
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView, ActivityIndicator} from 'react-native'
 import React, { useState } from 'react'
 import Task from './components/Task'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const HomeScreen = () => {
     const [task, setTask] = useState();
@@ -8,7 +9,10 @@ const HomeScreen = () => {
     const [city, setCity] = useState();
     const [show, setShow] = useState(false);
     const [degress, setDegrees] = useState();
+    const [loaded, setLoaded] = useState();
 
+    var today = new Date();
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
     const addTask = () => {
         Keyboard.dismiss();
@@ -29,7 +33,10 @@ const HomeScreen = () => {
         .then((response) => {
             setCity(response.location.name);
             setDegrees(response.current.temp_f);
-            setShow(true)
+            setShow(true);
+            setTimeout(() => {
+                setLoaded(true);
+            }, 500);
         })
         .catch((err) => {
             alert("Enter Valid City or Zipcode")
@@ -43,15 +50,18 @@ const HomeScreen = () => {
             <Text style={styles.sectionTitle}>Weather</Text>
             {!show && <View style={styles.weather}>
                 <TextInput style={styles.weatherInput} placeholder="Enter City or Zipcode" value={city} onChangeText={(text) => setCity(text)}></TextInput>
-                <TouchableOpacity style={styles.weatherButton} onPress={getWeather}></TouchableOpacity>
+                <TouchableOpacity style={styles.weatherButton} onPress={getWeather}>
+                    <Icon name='arrow-right' style={styles.go}></Icon>
+                </TouchableOpacity>
             </View>}
-            {show && <View style={styles.temp}>
+            {(show && !loaded) && <ActivityIndicator style={styles.loading} size="large"/>}
+            {(show && loaded) && <View style={styles.temp}>
                 <Text style={styles.tempFont}>{city}</Text>
-                <Text style={styles.tempFont}>{degress}</Text>
+                <Text style={styles.tempFont}>{Math.round(degress) + "°F"}</Text>
             </View>}
         </View>
-        <ScrollView>
-            
+        <Text style={styles.taskHeader}>{"Tasks for " + days[today.getDay()] + " " + today.getMonth() + 1 + "/" + today.getDate()}</Text>
+        <ScrollView style={styles.scroll}>
             <View style={styles.taskWrapper}>
                 <View style={styles.items}>
                 {
@@ -69,6 +79,7 @@ const HomeScreen = () => {
         <KeyboardAvoidingView 
             behavior={"padding"}
             style={styles.write}
+            keyboardVerticalOffset={30}
         >   
             <TextInput style={styles.input} placeholder={"Add a task"} value={task} onChangeText={(text) => setTask(text)}/>
             <TouchableOpacity onPress={addTask}>
@@ -86,15 +97,18 @@ export default HomeScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'lightgrey'
+        backgroundColor: 'lightgrey',
+        marginTop: 30,
     },
     taskWrapper: {
-        paddingTop: 30,
-        paddingHorizontal: 20
+        paddingTop: 5,
+        paddingHorizontal: 20,
     },
     sectionTitle: {
-        fontSize: 24,
-        fontWeight: 'bold'
+        fontSize: 28,
+        fontWeight: 'bold',
+        alignSelf: "center",
+        marginBottom: 3
     },
     items: {
         marginTop: 2
@@ -104,8 +118,8 @@ const styles = StyleSheet.create({
         marginTop: 10,
         alignItems: 'center',
         width: "90%",
-        height: "20%",
-        alignSelf: "center"
+        height: "15%",
+        alignSelf: "center",
     },
     write: {
         position: "absolute",
@@ -138,6 +152,17 @@ const styles = StyleSheet.create({
     addText: {
 
     },
+    scroll: {
+        marginTop: 0,
+        maxHeight: 300
+    },
+    weatherWrapper: {
+        width: 350,
+        height: 100,
+        // backgroundColor: "blue",
+        alignSelf: "center",
+        marginTop: 10
+    },
     weather: {
         display: "flex",
         flexDirection: "row",
@@ -156,18 +181,29 @@ const styles = StyleSheet.create({
     weatherButton: {
         height: 60,
         width: 60,
-        backgroundColor: 'red',
+        backgroundColor: 'darkgrey',
         borderRadius: 60,
     },
     temp: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center'
-
+        alignSelf: "center"
     },
     tempFont: {
-        fontSize: 35,
+        fontSize: 20,
         marginRight: 10,
         alignSelf: 'center'
-    }
+    },
+    taskHeader: {
+        alignSelf: "center",
+        marginTop: 5,
+        fontSize: 15,
+        fontWeight: "bold"
+    },
+    go: {
+        alignSelf: "center",
+        fontSize: 20,
+        marginTop: 20,
+        color: "lightgrey"
+    },  
 })
