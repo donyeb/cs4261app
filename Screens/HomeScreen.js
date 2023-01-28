@@ -1,7 +1,9 @@
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView, ActivityIndicator} from 'react-native'
 import React, { useState } from 'react'
+import { useNavigation } from '@react-navigation/native';
 import Task from './components/Task'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { signOut } from 'firebase/auth';
 
 const HomeScreen = () => {
     const [task, setTask] = useState();
@@ -13,6 +15,7 @@ const HomeScreen = () => {
 
     var today = new Date();
     var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const navigation = useNavigation();
 
     const addTask = () => {
         Keyboard.dismiss();
@@ -42,6 +45,10 @@ const HomeScreen = () => {
             alert("Enter Valid City or Zipcode")
             setCity(null);
         })
+    }
+
+    const logOut = () => {
+        navigation.navigate("Login");
     }
 
   return (
@@ -74,6 +81,10 @@ const HomeScreen = () => {
                 </View>
             </View>
         </ScrollView>
+
+        <TouchableOpacity style={styles.logout} onPress={logOut}>
+            <Text>Sign Out</Text>
+        </TouchableOpacity>
 
 
         <KeyboardAvoidingView 
@@ -114,7 +125,6 @@ const styles = StyleSheet.create({
         marginTop: 2
     },
     weatherWrapper: {
-        backgroundColor: "white",
         marginTop: 10,
         alignItems: 'center',
         width: "90%",
@@ -133,7 +143,7 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         width: 250,
         paddingHorizontal: 15,
-        backgroundColor: "white",
+        // backgroundColor: "white",
         borderColor: "darkgrey",
         borderWidth: 1,
         borderRadius: 60,
@@ -142,7 +152,7 @@ const styles = StyleSheet.create({
     addWrapper: {
         width: 60, 
         height: 60, 
-        backgroundColor: "white",
+        // backgroundColor: "white",
         borderRadius: 60,
         justifyContent: 'center',
         alignItems: 'center',
@@ -172,7 +182,7 @@ const styles = StyleSheet.create({
        paddingVertical: 15,
         width: 250,
         paddingHorizontal: 15,
-        backgroundColor: "white",
+        // backgroundColor: "white",
         borderColor: "darkgrey",
         borderWidth: 1,
         borderRadius: 60,
@@ -206,4 +216,12 @@ const styles = StyleSheet.create({
         marginTop: 20,
         color: "lightgrey"
     },  
+    logout: {
+        alignSelf: 'center',
+        marginTop: 70,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        backgroundColor: "darkgrey",
+        borderRadius: 5
+    }
 })

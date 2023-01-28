@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { authentication } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const Login = () => {
   const [email, setEmail] = useState();
@@ -17,12 +18,13 @@ const Login = () => {
       setPassword(null);
       navigation.navigate("Home");
     })
-    .catch((e) => {console.log(e)})
+    .catch((e) => {alert("Invalid Username and/or Password")})
   }
 
   return (
     <KeyboardAvoidingView style={styles.loginPage} behavior={"padding"}>
       <View style={styles.login}>
+        <Icon name='user-circle' style={styles.user} color="#5A5A5A"></Icon>
         <TextInput placeholder="Email" value={email} style={styles.loginInput} onChangeText={(text) => setEmail(text)}></TextInput>
         <TextInput placeholder="Password" value={password} style={styles.loginInput} secureTextEntry={true} onChangeText={(text) => setPassword(text)}></TextInput>
         <TouchableOpacity style={styles.loginButton} onPress={signInUser}>
@@ -50,8 +52,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  login: {
-
+  user: {
+    alignSelf: "center",
+    marginBottom: 20,
+    fontSize: 150,
   },
   loginInput: {
     paddingVertical: 15,
@@ -69,12 +73,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "white",
     alignItems: "center",
-    marginBottom: 10
+    marginBottom: 10,
   },
   registerButton: {
     padding: 15,
     borderRadius: 10,
     backgroundColor: "white",
-    alignItems: "center"
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "darkgrey",
+    backgroundColor: "lightgrey",
   }
 })
