@@ -29,6 +29,11 @@ const HomeScreen = () => {
         setTaskList(tmp);
     }
 
+    const searchAgain = () => {
+        setShow(false);
+        setLoaded(false);
+    }
+
     const getWeather = () => {
         Keyboard.dismiss();
         fetch(`http://api.weatherapi.com/v1/current.json?key=84c3ead37f784b9eafa161257232501&q=${city}&aqi=no`)
@@ -66,6 +71,11 @@ const HomeScreen = () => {
                 <Text style={styles.tempFont}>{city}</Text>
                 <Text style={styles.tempFont}>{Math.round(degress) + "°F"}</Text>
             </View>}
+            {(show && loaded) &&
+                <TouchableOpacity style={styles.search} onPress={searchAgain}>
+                    <Text>Search</Text>
+                </TouchableOpacity>
+            }
         </View>
         <Text style={styles.taskHeader}>{"Tasks for " + days[today.getDay()] + " " + today.getMonth() + 1 + "/" + today.getDate()}</Text>
         <ScrollView style={styles.scroll}>
@@ -83,7 +93,7 @@ const HomeScreen = () => {
         </ScrollView>
 
         <TouchableOpacity style={styles.logout} onPress={logOut}>
-            <Text>Sign Out</Text>
+            <Text style={styles.logoutButton}>Sign Out</Text>
         </TouchableOpacity>
 
 
@@ -222,6 +232,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
         backgroundColor: "darkgrey",
-        borderRadius: 5
-    }
+        borderRadius: 5,
+    },
+    search: {
+        alignSelf: "center",
+        backgroundColor: "darkgrey",
+        padding: 2,
+        borderRadius: 4,
+        marginTop: 7
+    },
+    logoutButton: {
+      fontWeight: "bold",  
+    },
 })

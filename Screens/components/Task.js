@@ -15,7 +15,7 @@ export default function Task(props) {
 
 const styles = StyleSheet.create({
     item: {
-        backgroundColor: "white",
+        backgroundColor: "darkgrey",
         padding: 15,
         borderRadius: 10,
         flexDirection: "row",
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     square: {
         width: 24, 
         height: 24,
-        backgroundColor: "blue",
+        backgroundColor: "lightgrey",
         opacity: 0.4,
         borderRadius: 5,
         marginRight: 15,
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     circular: {
         width: 12, 
         height: 12,
-        borderColor: "blue",
+        borderColor: "lightgrey",
         borderWidth: 2,
         borderRadius: 5
     }
