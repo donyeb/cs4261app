@@ -19,8 +19,12 @@ const HomeScreen = () => {
 
     const addTask = () => {
         Keyboard.dismiss();
-        setTaskList([...taskList, task]);
-        setTask(null);
+        if (task != null) {
+            setTaskList([...taskList, task]);
+            setTask(null);
+        } else {
+            alert("Please add a task")
+        }
     }
 
     const removeTask = (index) => {
