@@ -1,25 +1,63 @@
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView, ActivityIndicator} from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useInsertionEffect} from 'react'
 import { useNavigation } from '@react-navigation/native';
 import Task from './components/Task'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { signOut } from 'firebase/auth';
+import { db } from '../firebase';
+import { collection, getDocs, query, where, addDoc, deleteDoc, doc} from '@firebase/firestore';
+import { async } from '@firebase/util';
+import { remove}
 
-const HomeScreen = () => {
+const HomeScreen = ({route}) => {
     const [task, setTask] = useState();
     const [taskList, setTaskList] = useState([]);
     const [city, setCity] = useState();
     const [show, setShow] = useState(false);
     const [degress, setDegrees] = useState();
     const [loaded, setLoaded] = useState();
+    const [loaded2, setLoaded2] = useState(false);
+    const navigation = useNavigation();
+    const q = query(collection(db, "users"), where("email", "==", route.params.email1));
+    const collecti = collection(db, "users")
 
     var today = new Date();
     var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const navigation = useNavigation();
+
+    //console.log(route.params.email1);
+
+    useEffect(() => {
+        // console.log("hello")
+        // const getTasks = async () => {
+        //     const data = await getDocs(taskQ);
+        //     console.log(doc.id, "=>", doc.data());
+        // };
+        const getTasks = async () => {
+            const querySnapshot = await getDocs(q);
+            let arr = []
+            querySnapshot.forEach((doc) => {
+                //console.log(doc.data().task);
+                arr.push(doc.data().task);
+            });
+
+            setLoaded2(true);
+            setTaskList(arr);
+        }
+
+        getTasks();
+    }, [])
 
     const addTask = () => {
         Keyboard.dismiss();
         if (task != null) {
+            const setT = async () => {
+                const docRef = await addDoc(collection(db, "users"), {
+                    email: route.params.email1,
+                    task: task
+                });
+                console.log("Document written with ID: ", docRef.id);
+            }
+            setT();
             setTaskList([...taskList, task]);
             setTask(null);
         } else {
@@ -29,7 +67,14 @@ const HomeScreen = () => {
 
     const removeTask = (index) => {
         let tmp = [...taskList];
-        tmp.splice(index, 1);
+        let del = tmp.splice(index, 1)[0];
+        const q2 = query(collection(db, "users"), where("task", "==", del));
+        
+        // const deleteT = async () => {
+        //     const q = query(collecti, where("task", "==", del))
+        //     const snapshot = await getDocs(db, "users", del);
+        //     console.log(snapshot);
+        // }
         setTaskList(tmp);
     }
 
@@ -84,6 +129,7 @@ const HomeScreen = () => {
         <Text style={styles.taskHeader}>{"Tasks for " + days[today.getDay()] + " " + today.getMonth() + 1 + "/" + today.getDate()}</Text>
         <ScrollView style={styles.scroll}>
             <View style={styles.taskWrapper}>
+                {!loaded2 && <ActivityIndicator style={styles.loading} size="large"/>}
                 <View style={styles.items}>
                 {
                     taskList.map((task, index) => {

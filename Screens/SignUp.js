@@ -16,7 +16,9 @@ const SignUp = () => {
     .then((reg) => {
       setEmail(null);
       setPassword(null);
-      navigation.navigate("Home");
+      navigation.navigate("Home", {
+        email1: email,
+      });
     })
     .catch((err) => {console.log(err)})
   }

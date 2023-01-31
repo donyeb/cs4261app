@@ -16,7 +16,9 @@ const Login = () => {
     .then((s) => {
       setEmail(null);
       setPassword(null);
-      navigation.navigate("Home");
+      navigation.navigate("Home", {
+        email1: email,
+      });
     })
     .catch((e) => {alert("Invalid Username and/or Password")})
   }
