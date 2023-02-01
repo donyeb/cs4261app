@@ -5,9 +5,9 @@ import Task from './components/Task'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { signOut } from 'firebase/auth';
 import { db } from '../firebase';
-import { collection, getDocs, query, where, addDoc, deleteDoc, doc} from '@firebase/firestore';
+import { collection, getDocs, query, where, addDoc, deleteDoc} from '@firebase/firestore';
+import { doc } from 'firebase/firestore';
 import { async } from '@firebase/util';
-import { remove}
 
 const HomeScreen = ({route}) => {
     const [task, setTask] = useState();
@@ -27,7 +27,6 @@ const HomeScreen = ({route}) => {
     //console.log(route.params.email1);
 
     useEffect(() => {
-        // console.log("hello")
         // const getTasks = async () => {
         //     const data = await getDocs(taskQ);
         //     console.log(doc.id, "=>", doc.data());
@@ -36,7 +35,6 @@ const HomeScreen = ({route}) => {
             const querySnapshot = await getDocs(q);
             let arr = []
             querySnapshot.forEach((doc) => {
-                //console.log(doc.data().task);
                 arr.push(doc.data().task);
             });
 
@@ -70,11 +68,19 @@ const HomeScreen = ({route}) => {
         let del = tmp.splice(index, 1)[0];
         const q2 = query(collection(db, "users"), where("task", "==", del));
         
-        // const deleteT = async () => {
-        //     const q = query(collecti, where("task", "==", del))
-        //     const snapshot = await getDocs(db, "users", del);
-        //     console.log(snapshot);
-        // }
+        const deleteT = async () => {
+            const querySnapshot = await getDocs(q2);
+            querySnapshot.forEach((record) => {
+                //console.log(record.id);
+                deleteDoc(doc(db, "users", record.id))
+            });
+
+            // const q = query(collecti, where("task", "==", del))
+            // const snapshot = await getDocs(db, "users", del);
+            // console.log(snapshot);
+        }
+
+        deleteT();
         setTaskList(tmp);
     }
 
